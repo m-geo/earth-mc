@@ -1,15 +1,15 @@
+# combined script + workbook
 using NetCDF
 using Dates
 using Statistics
 using LinearAlgebra
 using JLD
 using Latexify
+using MCHammer
 
 include("run-sim.jl")
 include("utils.jl")
-include("MCHammer/construct_from_data.jl")
-
-#LET'S DEFINE AN EXTREME STATE
+# include("MCHammer/construct_from_data.jl")
 
 # definition years: 1959-1969: 10 years
 # walk through the years and get a temp. distribution (4 of them, one for each season)
@@ -21,18 +21,6 @@ data_ts = run_sim(;run_years=60, thresh_func=nothing, var="t1000", box="globe",
 JLD.save("/home/mgeo/earth-mc/vars/t1000_yearly_ts.jld","ts",data_ts)
 
 # base_timeseries = JLD.load("./vars/globe/base_timeseries.jld","ts")
-
-
-# DJF = base_timeseries[1]
-# MMA = base_timeseries[2]
-# JJA = base_timeseries[3]
-# SON = base_timeseries[4]
-
-# Statistics.quantile(DJF, 0.95) #287.93533181145926
-# Statistics.quantile(MMA, 0.95) #294.136056852706
-# Statistics.quantile(JJA, 0.95)
-# Statistics.quantile(SON, 0.95)
-
 
 # function assign_state(ref_collection, date, snap)
 #     #ref collection is a list of four lists, per season

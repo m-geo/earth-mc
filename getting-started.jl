@@ -1,11 +1,10 @@
 using NetCDF
 using Dates
-# using Plots
-#using GLMakie
 using Statistics
-using Plots
 
 include("utils.jl")
+
+# precip
 
 # ncinfo("jan1959-precip.nc")
 # filename = "jan1959-precip.nc"
@@ -30,14 +29,8 @@ hm = GLMakie.heatmap(lons, lats, map)
 avg_ts = dropdims(mean(tp[:,:,:], dims=[1,2]), dims=(1,2))
 avg_ts = (avg_ts*1.1494792990447085e-6).+0.03766383871249891
 
-# reshape(avg_ts, dims=0)
-# how can i get daily averages?? (while being concious of missing data)
-
 Plots.plot(tvec,avg_ts)
 
-## for good plotting:
-# set up scene, preset axis size (to match dims of earth)
-# figure out how to do colorbar
 
 ## temp
 
@@ -74,6 +67,12 @@ end
 
 
 ###
+counts = []
+for year in 1970:2000
+    fn = "/storage3/mgeo/earth-mc/data/pressure-levels/t1000-$year.nc"
+    tvec = get_tvec(fn)
 
-fn = "/storage3/mgeo/earth-mc/data/pressure-levels/1000temp-1970.nc"
-ncinfo(fn)
+    slice = ncread(fn, "t", start=[1,1,1], count=[-1,-1,-1])
+
+    push!(counts, count(i->(i==-32767), slice))
+end
