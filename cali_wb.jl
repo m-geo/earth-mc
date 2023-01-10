@@ -5,7 +5,7 @@ using Statistics
 using LinearAlgebra
 using JLD
 using Latexify
-using MCHammer
+# using MCHammer
 
 include("run-sim.jl")
 include("utils.jl")
@@ -15,10 +15,10 @@ include("utils.jl")
 # walk through the years and get a temp. distribution (4 of them, one for each season)
 
 ## generate reference timeseries:
-data_ts = run_sim(;run_years=60, thresh_func=nothing, var="t1000", box="globe",
-                        start_date=DateTime(1959,1,1), step_size=Dates.Hour(6), collection=nothing, data_mode=true, yearly_avg=true)
+data_ts = run_sim(;run_years=50, thresh_func=nothing, var="t1000", box="nigeria", start_date=DateTime(1959,1,1),
+                         step_size=Dates.Hour(6), collection=nothing, data_mode=true, seasonal=true, yearly_avg=false)
 #
-JLD.save("/home/mgeo/earth-mc/vars/t1000_yearly_ts.jld","ts",data_ts)
+JLD.save("/home/mgeo/earth-mc/vars/nigeria/all_seasonal.jld","ts",data_ts)
 
 # base_timeseries = JLD.load("./vars/globe/base_timeseries.jld","ts")
 
@@ -55,3 +55,7 @@ JLD.save("/home/mgeo/earth-mc/vars/t1000_yearly_ts.jld","ts",data_ts)
 
 # ss = steady_state(gen_matrix, number_of_states=12)
 # latexify(round.(real.(ss), digits=3))
+
+##
+
+# timeseries = JLD.load("./vars/t1000_yearly_ts_2.jld","ts")

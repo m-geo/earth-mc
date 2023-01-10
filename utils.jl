@@ -29,19 +29,22 @@ function index(vec, value) #surely there's a better way to do this directly from
 end
 
 
-function normalize_tp(tp)
-    # apply normalization func to precip
-    # where tp is an array
-    return (tp*1.1494792990447085e-6).+0.03766383871249891
+function get_normalization(file, var)
+    if var == "t1000"
+        var = "t"
+    end
+    scale_factor = ncgetatt(file, var, "scale_factor")
+    add_offset = ncgetatt(file, var, "add_offset")
+    return scale_factor, add_offset
 end
 
-function normalize_t2m(t2m)
-    # apply normalization to temp
-    return (t2m*0.001715080858817671).+264.37076263779323
+function normalize(x, scale_factor, add_offset)
+    return (x * scale_factor) .+ add_offset
 end
 
-function normalize_t1000(t1000)
-    return (t1000*0.0017247656599448226).+269.11825535398646
+function spherical_mean(array, latvec)
+    metric_kind_of = reshape(cos.(latvec / 180 * π), (1, length(latvec)))
+    return mean( metric_kind_of .* (array) ) / mean(metric_kind_of)
 end
 
 function get_season(date)

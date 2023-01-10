@@ -34,12 +34,12 @@ Plots.plot(tvec,avg_ts)
 
 ## temp
 
-temp_file = "jan1959-2mtemp.nc"
+temp_file = "/storage3/mgeo/earth-mc/data/t2m-2000.nc"
 ncinfo(temp_file)
 tvec = get_tvec(temp_file)
 
 t2m = ncread(temp_file, "t2m")
-t2m = normalize_t2m(t2m)
+t2m = normalize_t2m(t2m, temp_file)
 t2m_slice = ncread(temp_file,"t2m",start=[941,161,700], count=[240,100,1])
 plot(heatmap(1:240,1:100,reshape(t2m_slice,(240, 100))))
 
@@ -65,14 +65,6 @@ for i in range(1,1,744)
     end
 end
 
+##
 
-###
-counts = []
-for year in 1970:2000
-    fn = "/storage3/mgeo/earth-mc/data/pressure-levels/t1000-$year.nc"
-    tvec = get_tvec(fn)
-
-    slice = ncread(fn, "t", start=[1,1,1], count=[-1,-1,-1])
-
-    push!(counts, count(i->(i==-32767), slice))
-end
+JLD.load("vars/nigeria/seasonal-1981-1991.jld","ts")
