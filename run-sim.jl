@@ -1,5 +1,5 @@
 function run_sim(;run_years=2, thresh_func=nothing, var="t2m", start_date=DateTime(1960,1,1), step_size=Dates.Hour(6), 
-    collection=nothing, box="globe", data_mode=false, seasonal=false, yearly_avg=false)
+    collection=nothing, box="globe", data_mode=false, seasonal=false, monthly=false, nights=false, yearly_avg=false)
     # essentially just iterate forward through the dataset (not rlly a simulation)
     #options:
     #   box: area of analysis. options: {cali_box, nigeria, globe}
@@ -13,7 +13,11 @@ function run_sim(;run_years=2, thresh_func=nothing, var="t2m", start_date=DateTi
     timeseries = [] #list of all states (not unique)
 
     if seasonal
-        timeseries = [[],[],[],[]]
+        timeseries = [[] for i=1:4]
+    elseif monthly
+        timeseries = [[] for i=1:12]
+    elseif nights
+        timeseries = [[] for i=1:24]
     end
     yearly_ts = []
 
@@ -36,7 +40,8 @@ function run_sim(;run_years=2, thresh_func=nothing, var="t2m", start_date=DateTi
             if !data_mode
                 # get and record classification
                 snap = get_snap(file, vecs, date, var, box)
-                state = thresh_func(collection, date, snap)
+                param = mean(normalize_era5.(snap, scale_factor, add_offset), dims=[1,2])[1]
+                state = thresh_func(collection, date, param)
                 push!(timeseries, state)
             else #if data mode
                 # get parameter of interest over the field  
@@ -44,13 +49,24 @@ function run_sim(;run_years=2, thresh_func=nothing, var="t2m", start_date=DateTi
                 
                 param = 0.0
                 if box == "globe"
-                    param = spherical_mean(normalize.(snap, scale_factor, add_offset), vecs[3])
+                    param = spherical_mean(normalize_era5.(snap, scale_factor, add_offset), vecs[3]) #double check this implementation!
                 else
-                    param = mean(normalize.(snap, scale_factor, add_offset), dims=[1,2])[1]
+                    param = mean(normalize_era5.(snap, scale_factor, add_offset), dims=[1,2])[1]
                 end
                 if seasonal
                     season = get_season(date)
-                    push!(timeseries[season], param)               
+                    push!(timeseries[season], param)    
+                elseif monthly
+                    month = get_month(date)
+                    push!(timeseries[month], param)  
+                elseif nights
+                    month = get_month(date)
+                    night = is_night(date)
+                    if night
+                        push!(timeseries[2*month], param)  
+                    else #day 
+                        push!(timeseries[2*month-1], param) 
+                    end
                 else    
                     push!(timeseries, param)
                 end

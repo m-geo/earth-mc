@@ -1,0 +1,13 @@
+name = "earth-mc"
+uuid = "05e21a4f-80d2-4e0c-8991-b2288574e618"
+authors = ["mgeo "]
+version = "0.1.0"
+
+[deps]
+GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
+JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
+MCHammer = "58716550-704d-11e9-05c2-8f708e47025f"
+MarkovChainHammer = "38c40fd0-bccb-4723-b30d-b2caea0ad8d9"
+NetCDF = "30363a11-5582-574a-97bb-aa9a979735b9"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"

@@ -16,8 +16,8 @@ include("utils.jl")
 tvec = DateTime(1900,1,1)+Hour.(ncread(temp_file,"time"))
 
 
-lons = ncread(filename,"longitude")
-lats = ncread(filename,"latitude")
+lons = ncread(temp_file,"longitude")
+lats = ncread(temp_file,"latitude")
 tp_slice = ncread(filename,"tp",start=[941,161,700], count=[240,100,1])
 plot(heatmap(x=lons,y=lats,z=tp_slice))
 
@@ -34,7 +34,7 @@ Plots.plot(tvec,avg_ts)
 
 ## temp
 
-temp_file = "/storage3/mgeo/earth-mc/data/t2m-2000.nc"
+temp_file = "/storage3/mgeo/earth-mc/data/pressure-levels/t1000-1960.nc"
 ncinfo(temp_file)
 tvec = get_tvec(temp_file)
 

@@ -38,7 +38,7 @@ function get_normalization(file, var)
     return scale_factor, add_offset
 end
 
-function normalize(x, scale_factor, add_offset)
+function normalize_era5(x, scale_factor, add_offset)
     return (x * scale_factor) .+ add_offset
 end
 
@@ -47,8 +47,18 @@ function spherical_mean(array, latvec)
     return mean( metric_kind_of .* (array) ) / mean(metric_kind_of)
 end
 
+function is_night(date)
+    #without any thought to timezones
+    hour = Dates.hour(date)
+    return hour <= 6 || hour >= 20
+end
+
+function get_month(date)
+    return parse(Int64, Dates.format(date, "mm"))
+end
+
 function get_season(date)
-    month = parse(Int64, Dates.format(date, "mm"))
+    month = get_month(date)
     if month <= 2
         return 1
     elseif 3 <= month <= 5
